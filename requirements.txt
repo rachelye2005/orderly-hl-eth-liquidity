@@ -1,0 +1,7 @@
+requests>=2.31
+pandas>=2.0
+duckdb>=0.9
+plotly>=5.17
+streamlit>=1.28
+reportlab>=4.0
+python-dotenv>=1.0
