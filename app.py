@@ -94,9 +94,7 @@ with tab_ov:
     st.header("14-Day Summary: ETH Perpetual Liquidity")
     st.caption("June 17 – June 30, 2026 (UTC+8) | Orderly PERP_ETH_USDC vs Hyperliquid ETH")
 
-    # KPI row
-    c1, c2, c3, c4 = st.columns(4)
-
+    # Pre-compute KPI values
     ord_vol_str = fmt_usd(vol["ord_usd"])
     hl_vol_str  = fmt_usd(vol["hl_usd"])
     ratio_str   = f"HL/Ord ratio: {vol['ratio_hl_ord']:.1f}x"
@@ -115,12 +113,22 @@ with tab_ov:
     ord_vw_tick = vwas.loc["orderly",     "vw_tick_norm"]
     hl_vw_tick  = vwas.loc["hyperliquid", "vw_tick_norm"]
 
-    kpi_card(c1, "14d Volume (USD notional)", ord_vol_str, hl_vol_str, ratio_str)
-    kpi_card(c2, "Median Spread (tick-normalized)", f"{ord_p50_tick:.2f} ticks", f"{hl_p50_tick:.2f} ticks",
+    # Row 1: Volume + Median Spread
+    r1c1, r1c2 = st.columns(2)
+    kpi_card(r1c1, "14d Volume (USD notional)", ord_vol_str, hl_vol_str, ratio_str)
+    kpi_card(r1c2, "Median Spread (tick-normalized)",
+             f"{ord_p50_tick:.2f} ticks", f"{hl_p50_tick:.2f} ticks",
              f"Orderly {ord_p50_bps:.3f} bps | HL {hl_p50_bps:.3f} bps")
-    kpi_card(c3, "Mean Funding APR", f"{ord_apr:.2f}%", f"{hl_apr:.2f}%",
+
+    st.divider()
+
+    # Row 2: Funding APR + Vol-Weighted Spread
+    r2c1, r2c2 = st.columns(2)
+    kpi_card(r2c1, "Mean Funding APR",
+             f"{ord_apr:.2f}%", f"{hl_apr:.2f}%",
              "Orderly 8h interval | HL 1h interval")
-    kpi_card(c4, "Vol-Weighted Spread (ticks)", f"{ord_vw_tick:.2f}", f"{hl_vw_tick:.2f}",
+    kpi_card(r2c2, "Vol-Weighted Spread (ticks)",
+             f"{ord_vw_tick:.2f}", f"{hl_vw_tick:.2f}",
              "Higher volume periods weighted more")
 
     st.divider()
