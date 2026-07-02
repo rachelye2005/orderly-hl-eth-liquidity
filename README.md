@@ -1,3 +1,59 @@
+# ETH Perpetual Liquidity Comparison: Orderly Network vs Hyperliquid
+
+## Overview
+
+This report compares ETH/USDC perpetual contract liquidity between Orderly Network and Hyperliquid over a 14-day window (June 17 to June 30, 2026). 
+
+Data sources include CoinAPI hourly quote snapshots (672 entries), native REST API funding rate histories from both platforms (378 entries), and CoinAPI daily OHLCV candles (28 entries). ETH-USDe (different quote asset) and ETHFI-USDC (different underlying) are excluded from scope.
+
+A critical structural difference between the two platforms shapes the entire analysis: Orderly's minimum tick size is $0.01 while Hyperliquid's is $0.10, a 10x gap. Raw basis point (bps) spreads are therefore not directly comparable. This analysis uses **tick-normalized spread** (spread / tick_size) as the primary comparison metric, measuring how tightly market makers quote relative to each platform's own price grid. Additionally, Orderly settles funding every 8 hours (annualization factor: 1095) while Hyperliquid settles hourly (factor: 8760), both verified empirically via API.
+
+---
+
+## Spread
+
+Both platforms hold a median spread (P50) of 1.0 tick, meaning market makers consistently quote at the structural minimum under normal conditions. P75 remains at 1.0 tick for both, confirming this tightness holds across at least 75% of observations.
+
+The divergence appears in the tails. Hyperliquid widens to 2.0 ticks at P95 and 4.0 ticks at P99, showing relatively contained tail behavior. Orderly maintains 1.0 tick at P95 but jumps to 28.55 ticks at P99 (equivalent to a $0.2855 spread, roughly 1.7 bps), with the single worst observation reaching 47 ticks. Orderly performs well 99% of the time, but its worst 1% is significantly more severe than Hyperliquid's.
+
+Intraday analysis reveals that Orderly's spread deterioration clusters in two windows: UTC+8 02:00 to 06:00 and 19:00 to 23:00. These correspond to off-peak hours in the Asian trading session, during which market makers reduce quoting activity or withdraw entirely. Hyperliquid maintains 1.0 to 1.6 ticks across all hours with no comparable coverage gap.
+
+**Volume-Weighted Average Spread (VWAS)** provides the most operationally relevant insight. Orderly's VWAS is 2.40 ticks, 2.4 times its median, indicating that the majority of actual trading volume executes during periods of wider spreads. Hyperliquid's VWAS is 1.11 ticks, closely tracking its median, meaning execution quality is consistent regardless of timing. Monitoring median spread alone would overstate Orderly's effective execution quality; VWAS should serve as the primary operational KPI.
+
+---
+
+## Volume
+
+Hyperliquid recorded $11.30 billion in total notional volume over 14 days, averaging $807 million daily with a range of $235 million to $1.54 billion. Orderly recorded $233.5 million total, averaging $16.7 million daily, a gap of approximately 48x.
+
+This gap requires context. Orderly operates as an infrastructure layer, aggregating orders from multiple Builder DEXes (WOOFi Pro, Bitget Wallet, among others) into a shared central limit order book (CLOB). Its volume represents the combined output of several front-ends. Hyperliquid is a standalone platform with a large retail trader base. The 48x difference reflects ecosystem maturity and user scale rather than a pure liquidity deficiency.
+
+One notable anomaly: on June 29, Orderly posted $93.8 million in single-day volume, 5.6 times its daily average and accounting for 40% of the entire 14-day total. The source of this spike is unclear and may relate to a specific Builder's incentive campaign, block trading activity, or market maker rebalancing.
+
+---
+
+## Funding Rate
+
+Orderly averaged 10.91% APR with a standard deviation of just 0.41%, remaining positive for 100% of all funding periods. This level of stability is unusual: in a typical market, funding rates oscillate with shifting long/short positioning. A 100% positive rate means longs consistently paid shorts throughout the entire observation window, with bearish positioning never gaining dominance. Possible explanations include an implicit floor in Orderly's funding rate mechanism, predominantly long-biased trader composition, or a different spot index anchoring methodology compared to Hyperliquid.
+
+Hyperliquid averaged 1.38% APR with a standard deviation of 9.88%, positive in 60% of hourly periods. The frequent oscillation between positive and negative values reflects genuine two-sided positioning, a characteristic of healthy market microstructure.
+
+The persistent divergence between the two platforms (Hyperliquid averaging 9.5 percentage points below Orderly on 8-hour aligned periods, with extremes reaching -29.7%) reveals a structural pricing gap. In theory, this creates a funding rate arbitrage opportunity: shorting on Hyperliquid while longing on Orderly to capture the rate differential in a delta-neutral position. In practice, execution depends on cross-chain capital efficiency, margin requirements, and bridging risk.
+
+---
+
+## Operational Implications
+
+**Spread Coverage Gap**: Orderly market makers show clear withdrawal patterns during UTC+8 02:00 to 06:00 and 19:00 to 23:00, with P99 spreads deteriorating sharply in these windows. Time-targeted incentive mechanisms, such as adjusted rebate coefficients for off-peak hours, could address this gap.
+
+**Execution Quality Monitoring**: Median spread alone is misleading given that Orderly's VWAS reaches 2.4 times its median. Volume-weighted average spread should be incorporated into the daily operations dashboard as the core metric for assessing real execution quality experienced by traders.
+
+**Funding Rate Rebalancing**: The combination of 100% positive funding and minimal volatility suggests significant long/short imbalance on Orderly. Onboarding short-oriented market makers or hedging participants would help balance the position structure, reduce long-side holding costs, and bring funding rates closer to market-driven equilibrium.
+
+**Volume Anomaly Investigation**: The June 29 volume spike warrants per-Builder breakdown analysis. Establishing automated per-Builder volume monitoring with threshold-based alerting would provide the Liquidity Ops team with the foundational capability to identify and investigate anomalous trading patterns.
+
+
+
 # ETH 永续合约流动性对比：Orderly Network vs Hyperliquid
 
 ## 分析概述
