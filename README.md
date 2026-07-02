@@ -1,5 +1,7 @@
 # ETH Perpetual Liquidity Comparison: Orderly Network vs Hyperliquid
 
+**Live Dashboard**: https://orderly-hl-eth-liquidity-urbd3sbweevx9w846ojyea.streamlit.app/
+
 ## Overview
 
 This report compares ETH/USDC perpetual contract liquidity between Orderly Network and Hyperliquid over a 14-day window (June 17 to June 30, 2026). 
@@ -55,6 +57,8 @@ The persistent divergence between the two platforms (Hyperliquid averaging 9.5 p
 
 
 # ETH 永续合约流动性对比：Orderly Network vs Hyperliquid
+
+**仪表盘**：https://orderly-hl-eth-liquidity-urbd3sbweevx9w846ojyea.streamlit.app/
 
 ## 分析概述
 
