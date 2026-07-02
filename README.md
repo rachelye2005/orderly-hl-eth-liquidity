@@ -2,7 +2,7 @@
 
 **14-Day Analysis | June 17-30, 2026 (UTC) | Liquidity Operations Assessment**
 
-Live dashboard: [orderly-hl-eth-liquidity.streamlit.app](https://orderly-hl-eth-liquidity.streamlit.app)
+Live dashboard: [orderly-hl-eth-liquidity.streamlit.app](https://orderly-hl-eth-liquidity-urbd3sbweevx9w846ojyea.streamlit.app/)
 
 ---
 
